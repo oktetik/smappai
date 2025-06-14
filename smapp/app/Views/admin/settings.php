@@ -1,7 +1,5 @@
 <?= $this->extend('admin/layout/master') ?>
 <?php helper('form'); ?>
-
-<?php helper('form'); ?>
 <?= $this->section('content') ?>
 
 <!-- Page Title -->
@@ -27,6 +25,11 @@
     <?php elseif (isset($info_message)): ?>
         <div class="alert alert-info"><?= $info_message ?></div>
     <?php endif; ?>
+
+    <?php 
+    $db = db_connect();
+$db->query('SELECT 1');
+?>
 
     <form action="<?= get_admin_url_with_language('settings', $language) ?>" method="post">
         <div class="mb-3">

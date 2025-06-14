@@ -148,6 +148,12 @@ if (! function_exists('load_smapp_config')) {
         if ($dbConfigChanged && class_exists('\Config\Services')) {
             // Reset shared DB connection so new settings take effect immediately
             \Config\Services::resetSingle('db');
+            // Attempt eager connection so Debug Toolbar's Database panel appears
+            try {
+                service('db');
+            } catch (\Throwable $e) {
+                log_message('error', 'SMAPP dynamic DB connect error: ' . $e->getMessage());
+            }
         }
 
         // 4) ci_environment is read too early to overwrite at this stage,
