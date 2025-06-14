@@ -67,14 +67,9 @@ $smapp_config['language_detect_use_ip'] = false;
 
 $smapp_config['language_detect_use_browser'] = false;
 
-
-
 $smapp_config['language_detect_use_user'] = false;
 
-
-
 $smapp_config['language_detect_priority'] = ['user','ip','browser','default'];
-
 
 
 /**
@@ -82,11 +77,7 @@ $smapp_config['language_detect_priority'] = ['user','ip','browser','default'];
  */
 $smapp_config['ci_environment'] = 'development';
 
-
-
 $smapp_config['app_baseURL'] = 'http://localhost/';
-
-
 
 $smapp_config['db_hostname'] = 'localhost';
 $smapp_config['db_database'] = 'smappai';
