@@ -5,6 +5,77 @@
  * 
  * Bu dosya SMAPP sisteminin yardımcı fonksiyonlarını içerir.
  */
+/**
+ * --------------------------------------------------------------------------
+ *  Cached Config Loader
+ * --------------------------------------------------------------------------
+ *  smapp_config() lazily loads settings from an on-disk cache
+ *  (FCPATH . 'cache/smapp_config.cache.php'). If the cache is missing it
+ *  falls back to the original public_html/smapp_config.php file and
+ *  regenerates the cache for subsequent requests.
+ *
+ *  clear_smapp_config_cache() deletes the cache so that the next call
+ *  forces a rebuild – ideal after the admin panel saves new settings.
+ */
+if (! function_exists('smapp_config')) {
+    /**
+     * Gets the entire SMAPP config array or a single key.
+     *
+     * @param string|null $key
+     *
+     * @return mixed
+     */
+    function smapp_config(?string $key = null)
+    {
+        static $cached = null;
+
+        // Refresh the local cache if another helper call has modified the
+        // global config array during this request (via set_smapp_config()).
+        if ($cached !== null && isset($GLOBALS['smapp_config']) && $GLOBALS['smapp_config'] !== $cached) {
+            $cached = $GLOBALS['smapp_config'];
+        }
+
+        if ($cached === null) {
+            $cacheDir  = FCPATH . 'cache' . DIRECTORY_SEPARATOR;
+            $cacheFile = $cacheDir . 'smapp_config.cache.php';
+
+            if (is_file($cacheFile)) {
+                /** @var array $cached */
+                $cached = include $cacheFile;
+            } else {
+                /** @var array $cached */
+                $cached = include FCPATH . 'smapp_config.php';
+
+                // Ensure directory exists then build cache file
+                if (! is_dir($cacheDir)) {
+                    mkdir($cacheDir, 0777, true);
+                }
+                file_put_contents(
+                    $cacheFile,
+                    '<?php return ' . var_export($cached, true) . ';'
+                );
+            }
+
+            // Sync global for legacy code paths
+            $GLOBALS['smapp_config'] = $cached;
+        }
+
+        return $key === null ? $cached : ($cached[$key] ?? null);
+    }
+}
+
+if (! function_exists('clear_smapp_config_cache')) {
+    /**
+     * Removes the generated smapp_config cache so the next request rebuilds it.
+     */
+    function clear_smapp_config_cache(): void
+    {
+        $file = FCPATH . 'cache' . DIRECTORY_SEPARATOR . 'smapp_config.cache.php';
+        if (is_file($file)) {
+            @unlink($file);
+        }
+    }
+}
 
 /**
  * Config değerini al
@@ -13,10 +84,12 @@
  * @param mixed $default Varsayılan değer
  * @return mixed
  */
-function get_smapp_config($key, $default = null) {
-    global $smapp_config;
-    
-    return isset($smapp_config[$key]) ? $smapp_config[$key] : $default;
+function get_smapp_config($key, $default = null)
+{
+    // Retrieve value via cached config helper
+    $value = smapp_config($key);
+
+    return $value === null ? $default : $value;
 }
 
 /**
@@ -25,10 +98,38 @@ function get_smapp_config($key, $default = null) {
  * @param string $key Config anahtarı
  * @param mixed $value Değer
  */
-function set_smapp_config($key, $value) {
-    global $smapp_config;
-    
-    $smapp_config[$key] = $value;
+function set_smapp_config($key, $value): void
+{
+    /**
+     * Always begin with a fresh copy from disk so multiple updates in the
+     * same request do not overwrite one another because of stale in-memory
+     * data.
+     */
+    $configFile = FCPATH . 'smapp_config.php';
+
+    /** @var array $config */
+    $config = [];
+    if (is_file($configFile)) {
+        $config = include $configFile;
+        if (! is_array($config)) {
+            $config = [];
+        }
+    }
+
+    // Apply/override the value
+    $config[$key] = $value;
+
+    // Write updated config back to disk
+    file_put_contents(
+        $configFile,
+        '<?php return ' . var_export($config, true) . ';'
+    );
+
+    // Update runtime globals so the rest of this request sees the changes
+    $GLOBALS['smapp_config'] = $config;
+
+    // Remove cached file so the next request starts fresh
+    clear_smapp_config_cache();
 }
 
 /**
@@ -36,10 +137,9 @@ function set_smapp_config($key, $value) {
  *
  * @return array
  */
-function get_all_smapp_config() {
-    global $smapp_config;
-    
-    return $smapp_config;
+function get_all_smapp_config(): array
+{
+    return smapp_config();
 }
 
 /**
@@ -228,7 +328,7 @@ if (!function_exists('admin_lang')) {
      * @param string|null $locale Locale (opsiyonel)
      * @return string
      */
-    function admin_lang(string $key, array $data = [], string $locale = null): string
+    function admin_lang(string $key, array $data = [], ?string $locale = null): string
     {
         // Try the regular flattened key first (CI4 default)
         $value = lang('Admin.' . $key, $data, $locale);

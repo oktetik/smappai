@@ -31,6 +31,8 @@
 $db->query('SELECT 1');
 ?>
 
+<?= $cacheDir  = FCPATH . 'cache' . DIRECTORY_SEPARATOR; ?>
+
     <form action="<?= get_admin_url_with_language('settings', $language) ?>" method="post">
         <div class="mb-3">
             <label for="admin_route" class="form-label"><?= admin_lang('label.admin_route') ?></label>

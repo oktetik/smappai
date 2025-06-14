@@ -250,6 +250,12 @@ class Admin extends BaseController
         
         log_message('info', 'updateConfigFile: Config file path = ' . $config_file);
         log_message('info', 'updateConfigFile: File exists = ' . (file_exists($config_file) ? 'YES' : 'NO'));
+// Shortcut for modern array-style config
+        if (function_exists('set_smapp_config')) {
+            set_smapp_config($key, $value);
+            log_message('info', 'updateConfigFile: Config updated via set_smapp_config()');
+            return;
+        }
         
         // Dosya varlığını kontrol et
         if (!file_exists($config_file)) {

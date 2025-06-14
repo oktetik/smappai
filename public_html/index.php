@@ -45,6 +45,8 @@ if (getcwd() . DIRECTORY_SEPARATOR !== FCPATH) {
 
 // SMAPP özel config dosyasını yükle
 require_once FCPATH . 'smapp_config.php';
+// Load SMAPP helper functions early so front-controller logic can access check_url_redirects()
+require_once FCPATH . '../smapp/app/Helpers/smapp_helper.php';
 
 // ---------------------------------------------------------------
 //  Sync CodeIgniter runtime ENVIRONMENT with smapp_config.php
@@ -62,6 +64,9 @@ if (isset($smapp_config['ci_environment']) && is_string($smapp_config['ci_enviro
         define('ENVIRONMENT', $smapp_config['ci_environment']);
     }
 }
+
+error_reporting(-1);
+ini_set('display_errors', '1');
 
 // URL yönlendirme kontrolü yap
 check_url_redirects();
