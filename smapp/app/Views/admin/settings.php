@@ -52,6 +52,67 @@
         <div class="mb-3 form-check">
             <input type="checkbox" name="force_language_route" id="force_language_route" class="form-check-input" <?= get_smapp_config('force_language_route', true) ? 'checked' : '' ?>>
             <label for="force_language_route" class="form-check-label"><?= admin_lang('label.force_language_route') ?></label>
+<!-- Smart Language Detection -->
+        <hr class="my-4">
+        <h4><?= admin_lang('settings.language_settings') ?></h4>
+
+        <div class="mb-3 form-check">
+            <input type="checkbox" name="language_detect_use_user" id="language_detect_use_user" class="form-check-input" <?= get_smapp_config('language_detect_use_user', true) ? 'checked' : '' ?>>
+            <label for="language_detect_use_user" class="form-check-label">Use Logged-in User Preference</label>
+        </div>
+        <div class="mb-3 form-check">
+            <input type="checkbox" name="language_detect_use_ip" id="language_detect_use_ip" class="form-check-input" <?= get_smapp_config('language_detect_use_ip', true) ? 'checked' : '' ?>>
+            <label for="language_detect_use_ip" class="form-check-label">Use IP Country</label>
+        </div>
+        <div class="mb-3 form-check">
+            <input type="checkbox" name="language_detect_use_browser" id="language_detect_use_browser" class="form-check-input" <?= get_smapp_config('language_detect_use_browser', true) ? 'checked' : '' ?>>
+            <label for="language_detect_use_browser" class="form-check-label">Use Browser Language</label>
+        </div>
+
+        <div class="mb-3">
+            <label for="language_detect_priority" class="form-label">Detection Priority (comma-separated)</label>
+            <input type="text"
+                   name="language_detect_priority"
+                   id="language_detect_priority"
+                   class="form-control"
+                   value="<?= set_value('language_detect_priority', implode(',', get_smapp_config('language_detect_priority', ['user','ip','browser','default']))) ?>">
+            <small class="text-muted">Example: user,ip,browser,default</small>
+        </div>
+<!-- Environment Settings -->
+        <hr class="my-4">
+        <h4><?= admin_lang('settings.environment_settings') ?></h4>
+
+        <div class="mb-3">
+            <label for="ci_environment" class="form-label"><?= admin_lang('label.ci_environment') ?></label>
+            <select name="ci_environment" id="ci_environment" class="form-select">
+                <?php
+                    $envOptions = ['production', 'development', 'testing'];
+                    $currentEnv = set_value('ci_environment', get_smapp_config('ci_environment', 'development'));
+                    foreach ($envOptions as $opt): ?>
+                        <option value="<?= $opt ?>" <?= $opt === $currentEnv ? 'selected' : '' ?>>
+                            <?= ucfirst($opt) ?>
+                        </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="app_baseURL" class="form-label"><?= admin_lang('label.app_baseURL') ?></label>
+            <input type="text"
+                   name="app_baseURL"
+                   id="app_baseURL"
+                   class="form-control"
+                   value="<?= set_value('app_baseURL', get_smapp_config('app_baseURL', 'http://localhost/')) ?>">
+        </div>
+
+        <div class="mb-3">
+            <label for="logger_threshold" class="form-label"><?= admin_lang('label.logger_threshold') ?></label>
+            <input type="number"
+                   name="logger_threshold"
+                   id="logger_threshold"
+                   class="form-control"
+                   value="<?= set_value('logger_threshold', get_smapp_config('logger_threshold', 4)) ?>">
+        </div>
         </div>
         <button type="submit" class="btn btn-primary"><?= admin_lang('button.save') ?></button>
     </form>

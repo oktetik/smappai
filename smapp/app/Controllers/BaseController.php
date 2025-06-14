@@ -68,6 +68,14 @@ abstract class BaseController extends Controller
         // Preload any models, libraries, etc, here.
 
         // E.g.: $this->session = service('session');
+
+        // ------------------------------------------------------------------
+        //  Ensure custom SMAPP dynamic configuration is loaded (every request)
+        //  so that runtime changes in smapp_config.php are always respected.
+        // ------------------------------------------------------------------
+        if (function_exists('load_smapp_config')) {
+            load_smapp_config();               // brings values from smapp_config.php
+        }
         
         // Dil sistemini başlat
         $this->initLanguage();

@@ -46,6 +46,23 @@ if (getcwd() . DIRECTORY_SEPARATOR !== FCPATH) {
 // SMAPP özel config dosyasını yükle
 require_once FCPATH . 'smapp_config.php';
 
+// ---------------------------------------------------------------
+//  Sync CodeIgniter runtime ENVIRONMENT with smapp_config.php
+// ---------------------------------------------------------------
+if (isset($smapp_config['ci_environment']) && is_string($smapp_config['ci_environment'])) {
+    // Make it available for Boot::defineEnvironment()
+    putenv('CI_ENVIRONMENT=' . $smapp_config['ci_environment']);  // <- Boot::defineEnvironment() kullanır
+    $_SERVER['CI_ENVIRONMENT'] = $smapp_config['ci_environment']; // eski alışkanlık
+    $_ENV['CI_ENVIRONMENT']    = $smapp_config['ci_environment']; // modern yol
+    
+    // Frameworkün aslında kullandığı sabit ENVIRONMENT'tır.
+    // Boot::defineEnvironment() bunu tanımlamadan önce biz erken tanımlarız
+    // ki doğru bootstrap dosyası (Config/Boot/development.php vs) yüklensin.
+    if (! defined('ENVIRONMENT')) {
+        define('ENVIRONMENT', $smapp_config['ci_environment']);
+    }
+}
+
 // URL yönlendirme kontrolü yap
 check_url_redirects();
 

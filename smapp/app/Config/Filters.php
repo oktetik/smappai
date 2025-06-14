@@ -35,6 +35,8 @@ class Filters extends BaseFilters
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
         'language'      => \App\Filters\LanguageFilter::class,
+        // Smart best-language detector
+        'langdetect'    => \App\Filters\LanguageDetector::class,
     ];
 
     /**
@@ -56,9 +58,9 @@ class Filters extends BaseFilters
             'pagecache',  // Web Page Caching
         ],
         'after' => [
-            'pagecache',   // Web Page Caching
             'performance', // Performance Metrics
             'toolbar',     // Debug Toolbar
+            'pagecache',   // Web Page Caching
         ],
     ];
 
@@ -73,6 +75,7 @@ class Filters extends BaseFilters
             // 'honeypot',
             // 'csrf',
             // 'invalidchars',
+            'langdetect',      // detect & redirect to best language
         ],
         'after' => [
             // 'honeypot',

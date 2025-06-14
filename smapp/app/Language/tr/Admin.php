@@ -84,6 +84,7 @@ return [
         'force_language_route_help' => 'Etkinleştirildiğinde varsayılan dil için bile URL\'de dil kodu zorunlu olur.',
         'force_language_route_example' => 'Etkin: domain.com/tr/sayfa | Devre Dışı: domain.com/sayfa (varsayılan dil için)',
         'language_settings' => 'Dil Ayarları',
+        'environment_settings' => 'Ortam Ayarları',
         'save_settings' => 'Ayarları Kaydet',
         'warning_title' => 'Uyarı',
         'warning_message' => 'Admin rotasını değiştirdikten sonra yeni URL üzerinden erişim yapmanız gerekecektir. Mevcut oturumunuz sonlanacak ve yeni adresten tekrar giriş yapmanız gerekebilir.',
@@ -105,7 +106,10 @@ return [
         'force_https'          => 'HTTPS Zorunlu',
         'force_www'            => 'WWW Zorunlu',
         'default_language'     => 'Varsayılan Dil',
-        'force_language_route' => 'Dil Rotası Zorunlu'
+        'force_language_route' => 'Dil Rotası Zorunlu',
+        'ci_environment'      => 'CI Ortamı',
+        'app_baseURL'         => 'Temel URL',
+        'logger_threshold'    => 'Günlük Seviyesi'
     ],
     
     // Butonlar

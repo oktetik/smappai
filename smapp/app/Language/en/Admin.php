@@ -84,6 +84,7 @@ return [
         'force_language_route_help' => 'When enabled, language code becomes mandatory in URL even for default language.',
         'force_language_route_example' => 'Enabled: domain.com/en/page | Disabled: domain.com/page (for default language)',
         'language_settings' => 'Language Settings',
+        'environment_settings' => 'Environment Settings',
         'save_settings' => 'Save Settings',
         'warning_title' => 'Warning',
         'warning_message' => 'After changing the admin route, you will need to access through the new URL. Your current session will end and you may need to log in again from the new address.',
@@ -105,7 +106,10 @@ return [
         'force_https'        => 'Force HTTPS',
         'force_www'          => 'Force WWW',
         'default_language'   => 'Default Language',
-        'force_language_route' => 'Force Language Route'
+        'force_language_route' => 'Force Language Route',
+        'ci_environment'      => 'CI Environment',
+        'app_baseURL'         => 'Base URL',
+        'logger_threshold'    => 'Logger Threshold'
     ],
     
     // Buttons

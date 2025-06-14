@@ -43,6 +43,14 @@ Events::on('pre_system', static function (): void {
      * If you delete, they will no longer be collected.
      */
     if (CI_DEBUG && ! is_cli()) {
+        // ------------------------------------------------------------------
+        //  Ensure SMAPP dynamic configuration (e.g. updated baseURL) is
+        //  applied *before* the Debug Toolbar builds its internal URLs.
+        // ------------------------------------------------------------------
+        if (function_exists('load_smapp_config')) {
+            load_smapp_config();
+        }
+
         Events::on('DBQuery', 'CodeIgniter\Debug\Toolbar\Collectors\Database::collect');
         service('toolbar')->respond();
         // Hot Reload route - for framework use on the hot reloader.

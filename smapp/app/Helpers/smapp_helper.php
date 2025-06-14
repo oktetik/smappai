@@ -258,3 +258,108 @@ if (!function_exists('admin_lang')) {
         return $value;
     }
 }
+/* ============================================================
+ * Advanced Language Detection Helpers
+ * ============================================================
+ */
+
+/**
+ * Detect language from logged-in user preference.
+ * Placeholder implementation reads session('user_language') if set.
+ */
+function detect_user_language(): ?string
+{
+    $lang = session()->get('user_language');
+    return is_string($lang) && is_valid_language($lang) ? $lang : null;
+}
+
+/**
+ * Detect language from browser’s Accept-Language header.
+ */
+function detect_browser_language(): ?string
+{
+    if (! isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+        return null;
+    }
+    $accepted = strtolower($_SERVER['HTTP_ACCEPT_LANGUAGE']);
+    // Split by comma and quality value
+    $parts = array_map(fn ($p) => trim(explode(';', $p)[0]), explode(',', $accepted));
+    foreach ($parts as $code) {
+        // keep only primary subtag (en-US -> en)
+        $primary = explode('-', $code)[0];
+        if (is_valid_language($primary)) {
+            return $primary;
+        }
+    }
+    return null;
+}
+
+/**
+ * Detect language from IP address country code (very rough).
+ * Uses a tiny mapping table for demo purposes.
+ */
+function detect_ip_language(): ?string
+{
+    if (! isset($_SERVER['REMOTE_ADDR'])) {
+        return null;
+    }
+    $ip = $_SERVER['REMOTE_ADDR'];
+    // In production you’d call a GeoIP service. Here we stub with simple check:
+    // 127.0.0.1 => default, else fall through.
+    $countryToLang = [
+        'tr' => 'tr',
+        'us' => 'en',
+        'gb' => 'en',
+        'de' => 'de',
+        'fr' => 'fr',
+    ];
+    // Dummy country code derive
+    $cc = strtolower(substr($ip, -2)); // obviously wrong, just placeholder
+    return $countryToLang[$cc] ?? null;
+}
+
+/**
+ * Determine the best language according to priority list and config flags.
+ *
+ * @return string Best language code
+ */
+function get_best_language(): string
+{
+    $default = get_default_language();
+
+    $priority = get_smapp_config('language_detect_priority', ['user','ip','browser','default']);
+
+    // Ensure priority is array
+    if (! is_array($priority)) {
+        $priority = explode(',', (string) $priority);
+    }
+
+    $useUser    = get_smapp_config('language_detect_use_user', true);
+    $useIP      = get_smapp_config('language_detect_use_ip', true);
+    $useBrowser = get_smapp_config('language_detect_use_browser', true);
+
+    foreach ($priority as $source) {
+        $source = trim(strtolower($source));
+        switch ($source) {
+            case 'user':
+                if ($useUser && ($lang = detect_user_language())) {
+                    return $lang;
+                }
+                break;
+            case 'ip':
+                if ($useIP && ($lang = detect_ip_language())) {
+                    return $lang;
+                }
+                break;
+            case 'browser':
+                if ($useBrowser && ($lang = detect_browser_language())) {
+                    return $lang;
+                }
+                break;
+            case 'default':
+                return $default;
+        }
+    }
+
+    return $default;
+}

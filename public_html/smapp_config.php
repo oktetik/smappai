@@ -59,13 +59,201 @@ $smapp_config['supported_languages'] = [
  * false: Varsayılan dil için dil kodu opsiyonel (domain.com/sayfa)
  */
 $smapp_config['force_language_route'] = true;
+/**
+ * Smart Language Detection
+ */
+$smapp_config['language_detect_use_ip'] = false;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$smapp_config['language_detect_use_browser'] = false;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$smapp_config['language_detect_use_user'] = false;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$smapp_config['language_detect_priority'] = ['user','ip','browser','default'];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * Environment Settings
+ */
+$smapp_config['ci_environment'] = 'production';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$smapp_config['app_baseURL'] = 'http://localhost/';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$smapp_config['logger_threshold'] = 4;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Helper fonksiyonları yükle
 $helper_file = __DIR__ . '/../smapp/app/Helpers/smapp_helper.php';
 if (file_exists($helper_file)) {
     require_once $helper_file;
 }
 
-// Config dosyasının yüklendiğini belirt
-define('SMAPP_CONFIG_LOADED', true);
+// Config dosyasının yüklendiğini belirt (redeclare guard)
+if (!defined('SMAPP_CONFIG_LOADED')) {
+    define('SMAPP_CONFIG_LOADED', true);
+}
+
+// ---------------------------------------------------------------
+//  Return the array so bootstrap can import settings dynamically
+// ---------------------------------------------------------------
+return $smapp_config;
 
 ?>
