@@ -125,7 +125,32 @@ if (! function_exists('load_smapp_config')) {
             $logger->threshold = $settings['logger_threshold'];
         }
 
-        // 3) ci_environment is read too early to overwrite at this stage,
+        // 3) Database credentials moved to smapp_config.php
+        $dbKeys = [
+            'db_hostname' => 'hostname',
+            'db_database' => 'database',
+            'db_username' => 'username',
+            'db_password' => 'password',
+            'db_driver'   => 'DBDriver',
+            'db_prefix'   => 'DBPrefix',
+            'db_port'     => 'port',
+        ];
+        $dbConfigChanged = false;
+        foreach ($dbKeys as $key => $field) {
+            if (array_key_exists($key, $settings)) {
+                $db = config('Database');
+                if (! isset($db->default[$field]) || $db->default[$field] !== $settings[$key]) {
+                    $db->default[$field] = $settings[$key];
+                    $dbConfigChanged = true;
+                }
+            }
+        }
+        if ($dbConfigChanged && class_exists('\Config\Services')) {
+            // Reset shared DB connection so new settings take effect immediately
+            \Config\Services::resetSingle('db');
+        }
+
+        // 4) ci_environment is read too early to overwrite at this stage,
         //    but we still keep it under config('smapp') for reference.
     }
 }

@@ -64,102 +64,13 @@ $smapp_config['force_language_route'] = true;
  */
 $smapp_config['language_detect_use_ip'] = false;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 $smapp_config['language_detect_use_browser'] = false;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 $smapp_config['language_detect_use_user'] = false;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 $smapp_config['language_detect_priority'] = ['user','ip','browser','default'];
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /**
@@ -168,51 +79,16 @@ $smapp_config['language_detect_priority'] = ['user','ip','browser','default'];
 $smapp_config['ci_environment'] = 'production';
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 $smapp_config['app_baseURL'] = 'http://localhost/';
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+$smapp_config['db_hostname'] = 'localhost';
+$smapp_config['db_database'] = 'ci4';
+$smapp_config['db_username'] = 'root';
+$smapp_config['db_password'] = 'root';
+$smapp_config['db_driver']   = 'MySQLi';
+$smapp_config['db_prefix']   = '';
+$smapp_config['db_port']     = 3306;
 
 
 $smapp_config['logger_threshold'] = 4;
