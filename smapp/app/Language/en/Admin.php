@@ -18,6 +18,8 @@ return [
     'save' => 'Save',
     'cancel' => 'Cancel',
     'delete' => 'Delete',
+    'restore' => 'Restore',
+    'hard_delete' => 'Hard Delete',
     'edit' => 'Edit',
     'add' => 'Add',
     'back' => 'Back',
@@ -41,6 +43,7 @@ return [
         'dashboard' => 'Dashboard',
         'users' => 'Users',
         'settings' => 'Settings',
+        'languages' => 'Languages',
         'debug' => 'Debug',
         'api_test' => 'API Test',
         'logout' => 'Logout'

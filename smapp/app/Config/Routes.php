@@ -50,6 +50,21 @@ foreach ($language_codes as $lang) {
         $routes->get('users', 'Admin::users');
         $routes->match(['get', 'post'], 'settings', 'Admin::settings');
         $routes->match(['get', 'post'], 'debug', 'Admin::debug');
+
+        // Language management
+        $routes->group('languages', ['namespace' => 'App\Controllers\Admin'], function($routes){
+            $routes->get('/',               'Languages::index');
+            // Filtered lists: /languages/active, /languages/pending, etc.
+            $routes->get('(:segment)',      'Languages::index/$1');
+            $routes->get('create',          'Languages::create');
+            $routes->post('store',          'Languages::store');
+            $routes->get('edit/(:num)',     'Languages::edit/$1');
+            $routes->post('update/(:num)',  'Languages::update/$1');
+            $routes->post('delete/(:num)',  'Languages::delete/$1');
+            $routes->post('restore/(:num)', 'Languages::restore/$1');
+            $routes->post('purge/(:num)',   'Languages::purge/$1');
+            $routes->post('default/(:num)', 'Languages::setDefault/$1');
+        });
         
         // Admin API rotaları
         $routes->group('api', function($routes) {
@@ -79,6 +94,21 @@ if (!$force_language_route) {
         $routes->get('users', 'Admin::users');
         $routes->match(['get', 'post'], 'settings', 'Admin::settings');
         $routes->match(['get', 'post'], 'debug', 'Admin::debug');
+
+        // Language management
+        $routes->group('languages', ['namespace' => 'App\Controllers\Admin'], function($routes){
+            $routes->get('/',               'Languages::index');
+            // Filtered lists for default-language (no locale in URL)
+            $routes->get('(:segment)',      'Languages::index/$1');
+            $routes->get('create',          'Languages::create');
+            $routes->post('store',          'Languages::store');
+            $routes->get('edit/(:num)',     'Languages::edit/$1');
+            $routes->post('update/(:num)',  'Languages::update/$1');
+            $routes->post('delete/(:num)',  'Languages::delete/$1');
+            $routes->post('restore/(:num)', 'Languages::restore/$1');
+            $routes->post('purge/(:num)',   'Languages::purge/$1');
+            $routes->post('default/(:num)', 'Languages::setDefault/$1');
+        });
         
         $routes->group('api', function($routes) {
             $routes->get('stats', 'Admin\Api::stats');

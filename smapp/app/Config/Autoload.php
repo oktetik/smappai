@@ -17,7 +17,11 @@ class Autoload extends AutoloadConfig
      *
      * @var array
      */
-    public $psr4 = [];
+    public $psr4 = [
+        // Default namespaces for the application
+        'App'    => APPPATH,            // Allows App\* classes (default application namespace)
+        'Config' => APPPATH . 'Config', // Explicit mapping for configuration classes
+    ];
     
     /**
      * -------------------------------------------------------------------

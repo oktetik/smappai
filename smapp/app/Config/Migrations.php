@@ -43,8 +43,8 @@ class Migrations extends BaseConfig
      *
      * Supported formats:
      * - YmdHis_
-     * - Y-m-d-His_
      * - Y_m_d_His_
+     * - Y-m-d-His_  (legacy)
      */
-    public string $timestampFormat = 'Y-m-d-His_';
+public string $timestampFormat = 'Y_m_d_His_';
 }

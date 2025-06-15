@@ -44,7 +44,15 @@ if (getcwd() . DIRECTORY_SEPARATOR !== FCPATH) {
  */
 
 // SMAPP özel config dosyasını yükle
-require_once FCPATH . 'smapp_config.php';
+/**
+ * Load SMAPP settings and capture the returned array so we can
+ * reference it immediately (before any helper has a chance to
+ * populate $GLOBALS).
+ *
+ * The file returns an associative array like:
+ *   [ 'ci_environment' => 'development', ... ]
+ */
+$smapp_config = require FCPATH . 'smapp_config.php';
 // Load SMAPP helper functions early so front-controller logic can access check_url_redirects()
 require_once FCPATH . '../smapp/app/Helpers/smapp_helper.php';
 

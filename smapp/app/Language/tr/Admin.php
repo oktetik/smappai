@@ -18,6 +18,8 @@ return [
     'save' => 'Kaydet',
     'cancel' => 'İptal',
     'delete' => 'Sil',
+    'restore' => 'Geri Yükle',
+    'hard_delete' => 'Kalıcı Sil',
     'edit' => 'Düzenle',
     'add' => 'Ekle',
     'back' => 'Geri',
@@ -41,6 +43,7 @@ return [
         'dashboard' => 'Dashboard',
         'users' => 'Kullanıcılar',
         'settings' => 'Ayarlar',
+        'languages' => 'Diller',
         'debug' => 'Debug',
         'api_test' => 'API Test',
         'logout' => 'Çıkış'

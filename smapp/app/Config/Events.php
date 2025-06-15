@@ -24,6 +24,27 @@ use CodeIgniter\HotReloader\HotReloader;
  */
 
 Events::on('pre_system', static function (): void {
+
+    /**
+     * ------------------------------------------------------------------
+     *  Load SMAPP dynamic configuration EARLY for both web and CLI.
+     *  This ensures CLI commands like `php spark migrate` receive the
+     *  database credentials pulled from public_html/smapp_config.php.
+     * ------------------------------------------------------------------
+     */
+        // ------------------------------------------------------------------
+        // Ensure the helper function is available during very early CLI boots
+        // where app/Common.php might not yet be included.
+        // ------------------------------------------------------------------
+        if (! function_exists('load_smapp_config')) {
+            $commonPath = APPPATH . 'Common.php';
+            if (is_file($commonPath)) {
+                require_once $commonPath;
+            }
+        }
+        if (function_exists('load_smapp_config')) {
+            load_smapp_config();
+        }
     if (ENVIRONMENT !== 'testing') {
         if (ini_get('zlib.output_compression')) {
             throw FrameworkException::forEnabledZlibOutputCompression();

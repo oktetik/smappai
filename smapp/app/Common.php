@@ -46,8 +46,35 @@ if (! function_exists('load_smapp_config')) {
         }
 
         // Determine absolute path to the config file.
-        $path = defined('FCPATH') ? FCPATH . 'smapp_config.php' : null;
-        if (! $path || ! is_file($path)) {
+        //  - Web requests (front-controller) define FCPATH
+        //  - CLI commands (php spark …) do NOT, so we must locate the file
+        //    relative to the project’s workspace. Because the CodeIgniter
+        //    application itself is stored in "{workspace}/smapp/" while
+        //    smapp_config.php is in "{workspace}/public_html/", probing only
+        //    ROOTPATH/public_html will fail when ROOTPATH already ends with
+        //    "/smapp/". Therefore we try multiple candidate locations and
+        //    pick the first one that exists.
+        if (defined('FCPATH')) {
+            $path = FCPATH . 'smapp_config.php';
+        } else {
+            $candidates = [
+                // Workspace root == ROOTPATH (monolithic layout)
+                rtrim(ROOTPATH, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'public_html' . DIRECTORY_SEPARATOR . 'smapp_config.php',
+                // Workspace root is the parent of ROOTPATH (nested app layout)
+                dirname(rtrim(ROOTPATH, DIRECTORY_SEPARATOR)) . DIRECTORY_SEPARATOR . 'public_html' . DIRECTORY_SEPARATOR . 'smapp_config.php',
+            ];
+            $path = null;
+            foreach ($candidates as $candidate) {
+                if (is_file($candidate)) {
+                    $path = $candidate;
+                    break;
+                }
+            }
+            // Fall back to first candidate so subsequent error handling
+            // (is_file check below) continues to work.
+            $path ??= $candidates[0];
+        }
+        if (! is_file($path)) {
             return;
         }
 

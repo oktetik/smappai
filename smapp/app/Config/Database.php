@@ -193,6 +193,31 @@ class Database extends Config
     {
         parent::__construct();
 
+        // -------------------------------------------------------------
+        //  SMAPP dynamic configuration bridge for CLI & background tasks
+        // -------------------------------------------------------------
+        if (isset($GLOBALS['smapp_config']) && is_array($GLOBALS['smapp_config'])) {
+            $map = [
+                'db_hostname' => 'hostname',
+                'db_database' => 'database',
+                'db_username' => 'username',
+                'db_password' => 'password',
+                'db_driver'   => 'DBDriver',
+                'db_prefix'   => 'DBPrefix',
+                'db_port'     => 'port',
+            ];
+            foreach ($map as $src => $dest) {
+                if (array_key_exists($src, $GLOBALS['smapp_config'])) {
+                    $this->default[$dest] = $GLOBALS['smapp_config'][$src];
+                }
+            }
+
+            // If a socket path was given in db_hostname, ensure port is null
+            if (str_starts_with($this->default['hostname'], '/')) {
+                $this->default['port'] = null;
+            }
+        }
+
         // Ensure that we always set the database group to 'tests' if
         // we are currently running an automated test suite, so that
         // we don't overwrite live data on accident.
